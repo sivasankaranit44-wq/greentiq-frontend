@@ -6,7 +6,7 @@ import FilterPanel from "../components/FilterPanel";
 import CustomerModal from "../components/CustomerModal";
 import CustomerDetails from "../components/CustomerDetails";
 
-const API = "http://localhost:5000/api/customers";
+const API = "https://greentiq-backend-1.onrender.com/api/customers";
 
 export default function Dashboard() {
   const [customers, setCustomers] = useState([]);
@@ -163,12 +163,12 @@ export default function Dashboard() {
       {/* Navbar */}
       <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-sm">
-            C
+          <div className="w-20 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-sm">
+            Greentiq
           </div>
 
           <span className="font-semibold text-lg">
-            CRM Dashboard
+            Greentiq CRM
           </span>
         </div>
 
