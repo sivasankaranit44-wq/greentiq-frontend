@@ -67,14 +67,17 @@ export default function Dashboard() {
       setTotal(responseData.total || 0);
       setPages(responseData.pages || 1);
     } catch (err) {
-      console.error("Failed to fetch customers:", err);
+  console.error("Failed to fetch customers:", err);
 
-      setError("Failed to fetch customers");
-      setCustomers([]);
-      setTotal(0);
-      setPages(1);
-    } finally {
-      setLoading(false);
+  console.log("Status:", err.response?.status);
+  console.log("Response:", err.response?.data);
+  console.log("API URL:", API);
+
+  setError(
+    err.response?.data?.message ||
+    err.response?.data?.error ||
+    "Failed to fetch customers"
+  );
     }
   }, [search, filters, sortBy, sortOrder, page, limit]);
 
