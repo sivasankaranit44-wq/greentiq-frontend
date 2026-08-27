@@ -6,7 +6,7 @@ import FilterPanel from "../components/FilterPanel";
 import CustomerModal from "../components/CustomerModal";
 import CustomerDetails from "../components/CustomerDetails";
 
-const API = "https://greentiq-backend-1.onrender.com/api/customers";
+const API = import.meta.env.VITE_API_URL;
 
 export default function Dashboard() {
   const [customers, setCustomers] = useState([]);
@@ -58,11 +58,17 @@ export default function Dashboard() {
 
       const responseData = res.data || {};
 
-      setCustomers(Array.isArray(responseData.data) ? responseData.data : []);
+      setCustomers(
+        Array.isArray(responseData.data)
+          ? responseData.data
+          : []
+      );
+
       setTotal(responseData.total || 0);
       setPages(responseData.pages || 1);
     } catch (err) {
       console.error("Failed to fetch customers:", err);
+
       setError("Failed to fetch customers");
       setCustomers([]);
       setTotal(0);
@@ -83,7 +89,11 @@ export default function Dashboard() {
 
   // Delete customer
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this customer?")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this customer?"
+      )
+    ) {
       return;
     }
 
@@ -100,7 +110,10 @@ export default function Dashboard() {
   const handleSave = async (formData) => {
     try {
       if (editCustomer) {
-        await axios.put(`${API}/${editCustomer._id}`, formData);
+        await axios.put(
+          `${API}/${editCustomer._id}`,
+          formData
+        );
       } else {
         await axios.post(API, formData);
       }
@@ -124,7 +137,9 @@ export default function Dashboard() {
   // Sorting
   const handleSort = (column) => {
     if (sortBy === column) {
-      setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"));
+      setSortOrder((prev) =>
+        prev === "asc" ? "desc" : "asc"
+      );
     } else {
       setSortBy(column);
       setSortOrder("asc");
@@ -147,12 +162,17 @@ export default function Dashboard() {
   const contactedThisWeek = customers.filter((customer) => {
     if (!customer.lastContactDate) return false;
 
-    const contactDate = new Date(customer.lastContactDate);
+    const contactDate = new Date(
+      customer.lastContactDate
+    );
 
-    if (Number.isNaN(contactDate.getTime())) return false;
+    if (Number.isNaN(contactDate.getTime())) {
+      return false;
+    }
 
     const diff =
-      (new Date() - contactDate) / (1000 * 60 * 60 * 24);
+      (new Date() - contactDate) /
+      (1000 * 60 * 60 * 24);
 
     return diff >= 0 && diff <= 7;
   }).length;
@@ -160,39 +180,54 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
 
-      {/* Navbar */}
-      <div className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-20 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-sm">
-            Greentiq
+      {/* ================= NAVBAR ================= */}
+      <div className="bg-gray-900 border-b border-gray-800 px-4 sm:px-6 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+          {/* Logo */}
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-20 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-sm shrink-0">
+              Greentiq
+            </div>
+
+            <span className="font-semibold text-lg whitespace-nowrap">
+              Greentiq CRM
+            </span>
           </div>
 
-          <span className="font-semibold text-lg">
-            Greentiq CRM
-          </span>
-        </div>
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search CRM..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+            className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+          />
 
-        <input
-          type="text"
-          placeholder="Search CRM..."
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-          className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-        />
+        </div>
       </div>
 
-      <div className="flex">
+      {/*BODY */}
+      <div className="flex flex-col md:flex-row">
 
-        {/* Sidebar */}
-        <div className="w-48 bg-gray-900 border-r border-gray-800 min-h-screen p-4">
-          {["Dashboard", "Contacts", "Deals", "Tasks", "Settings"].map(
-            (item) => (
+        {/* SIDEBAR */}
+        <div className="w-full md:w-48 bg-gray-900 border-r border-gray-800 md:min-h-screen p-3 md:p-4">
+
+          <div className="flex md:flex-col gap-2 overflow-x-auto">
+
+            {[
+              "Dashboard",
+              "Contacts",
+              "Deals",
+              "Tasks",
+              "Settings",
+            ].map((item) => (
               <div
                 key={item}
-                className={`px-3 py-2 rounded-lg text-sm mb-1 cursor-pointer ${
+                className={`px-3 py-2 rounded-lg text-sm cursor-pointer whitespace-nowrap ${
                   item === "Dashboard"
                     ? "bg-blue-600 text-white"
                     : "text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -200,23 +235,28 @@ export default function Dashboard() {
               >
                 {item}
               </div>
-            )
-          )}
+            ))}
+
+          </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-6">
+        {/* Main content */}
+        <div className="flex-1 p-4 sm:p-6 min-w-0">
 
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+
             <h1 className="text-2xl font-bold">
               Customers
             </h1>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
 
+              {/* Filter */}
               <button
-                onClick={() => setShowFilters((prev) => !prev)}
+                onClick={() =>
+                  setShowFilters((prev) => !prev)
+                }
                 className="relative flex items-center gap-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-sm px-4 py-2 rounded-lg transition"
               >
                 Filters
@@ -228,6 +268,7 @@ export default function Dashboard() {
                 )}
               </button>
 
+              {/* Limit */}
               <select
                 value={limit}
                 onChange={(e) => {
@@ -241,6 +282,7 @@ export default function Dashboard() {
                 <option value={50}>50 / page</option>
               </select>
 
+              {/* Add */}
               <button
                 onClick={() => {
                   setEditCustomer(null);
@@ -248,14 +290,14 @@ export default function Dashboard() {
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition font-medium"
               >
-                Add Customer
+                + Add Customer
               </button>
 
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 mb-6">
+          {/* ================= STATS ================= */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
 
             {[
               {
@@ -289,7 +331,9 @@ export default function Dashboard() {
                   {stat.value}
                 </p>
 
-                <p className={`text-xs ${stat.color} mt-1`}>
+                <p
+                  className={`text-xs ${stat.color} mt-1`}
+                >
                   Trend: {stat.trend}
                 </p>
               </div>
@@ -297,10 +341,11 @@ export default function Dashboard() {
 
           </div>
 
-          {/* Main Area */}
-          <div className="flex gap-4">
+          {/* ================= MAIN AREA ================= */}
+          <div className="flex flex-col xl:flex-row gap-4">
 
-            <div className="flex-1">
+            {/* Table */}
+            <div className="flex-1 min-w-0">
 
               {loading ? (
                 <div className="text-center py-20 text-gray-400">
@@ -323,23 +368,27 @@ export default function Dashboard() {
                 />
               )}
 
-              {/* Pagination */}
-              <div className="flex items-center justify-between mt-4">
+              {/* ================= PAGINATION ================= */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
 
                 <p className="text-gray-400 text-sm">
                   Showing{" "}
-                  {total === 0 ? 0 : (page - 1) * limit + 1}{" "}
+                  {total === 0
+                    ? 0
+                    : (page - 1) * limit + 1}{" "}
                   to{" "}
                   {Math.min(page * limit, total)}{" "}
                   of {total} entries
                 </p>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 overflow-x-auto">
 
                   <button
                     disabled={page === 1}
-                    onClick={() => setPage((prev) => prev - 1)}
-                    className="px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-700 transition"
+                    onClick={() =>
+                      setPage((prev) => prev - 1)
+                    }
+                    className="px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-700 transition whitespace-nowrap"
                   >
                     Previous
                   </button>
@@ -363,8 +412,10 @@ export default function Dashboard() {
 
                   <button
                     disabled={page >= pages}
-                    onClick={() => setPage((prev) => prev + 1)}
-                    className="px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-700 transition"
+                    onClick={() =>
+                      setPage((prev) => prev + 1)
+                    }
+                    className="px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg disabled:opacity-40 hover:bg-gray-700 transition whitespace-nowrap"
                   >
                     Next
                   </button>
@@ -374,30 +425,35 @@ export default function Dashboard() {
 
             </div>
 
-            {/* Filter Panel */}
+            {/* ================= FILTER PANEL ================= */}
             {showFilters && (
-              <FilterPanel
-                filters={filters}
-                onFilterChange={(newFilters) => {
-                  setFilters(newFilters);
-                  setPage(1);
-                }}
-                onClose={() => setShowFilters(false)}
-                companies={[
-                  ...new Set(
-                    customers
-                      .map((customer) => customer.company)
-                      .filter(Boolean)
-                  ),
-                ]}
-              />
+              <div className="w-full xl:w-72 shrink-0 order-first xl:order-last">
+                <FilterPanel
+                  filters={filters}
+                  onFilterChange={(newFilters) => {
+                    setFilters(newFilters);
+                    setPage(1);
+                  }}
+                  onClose={() => setShowFilters(false)}
+                  companies={[
+                    ...new Set(
+                      customers
+                        .map(
+                          (customer) =>
+                            customer.company
+                        )
+                        .filter(Boolean)
+                    ),
+                  ]}
+                />
+              </div>
             )}
 
           </div>
         </div>
       </div>
 
-      {/* Customer Modal */}
+      {/* ================= CUSTOMER MODAL ================= */}
       {showModal && (
         <CustomerModal
           customer={editCustomer}
@@ -409,11 +465,13 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Customer Details */}
+      {/* ================= CUSTOMER DETAILS ================= */}
       {selectedCustomer && (
         <CustomerDetails
           customer={selectedCustomer}
-          onClose={() => setSelectedCustomer(null)}
+          onClose={() =>
+            setSelectedCustomer(null)
+          }
           onEdit={() => {
             handleEdit(selectedCustomer);
             setSelectedCustomer(null);
@@ -424,6 +482,7 @@ export default function Dashboard() {
           }}
         />
       )}
+
     </div>
   );
 }

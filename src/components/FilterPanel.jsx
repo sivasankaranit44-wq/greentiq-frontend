@@ -84,52 +84,69 @@ export default function FilterPanel({
   };
 
   return (
-    <div className="w-72 bg-gray-900 border border-gray-800 rounded-xl p-4 h-fit">
+    <div className="w-full bg-gray-900 border border-gray-800 rounded-xl p-4 h-fit">
 
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
+
         <h3 className="font-semibold text-white">
           Filters
         </h3>
 
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-white transition"
+          className="text-gray-400 hover:text-white transition w-8 h-8 flex items-center justify-center"
           type="button"
         >
           ✕
         </button>
+
       </div>
 
       {/* Status */}
       <div className="mb-4">
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Status
         </p>
 
-        {["All", "Active", "Inactive"].map((status) => (
-          <label
-            key={status}
-            className="flex items-center gap-2 mb-1 cursor-pointer"
-          >
-            <input
-              type="radio"
-              name="customer-status"
-              value={status}
-              checked={local.status === status}
-              onChange={() => update("status", status)}
-              className="accent-blue-500"
-            />
+        <div className="grid grid-cols-3 gap-2 sm:block">
 
-            <span className="text-sm text-gray-300">
-              {status}
-            </span>
-          </label>
-        ))}
+          {["All", "Active", "Inactive"].map(
+            (status) => (
+              <label
+                key={status}
+                className="flex items-center gap-2 mb-1 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="customer-status"
+                  value={status}
+                  checked={
+                    local.status === status
+                  }
+                  onChange={() =>
+                    update(
+                      "status",
+                      status
+                    )
+                  }
+                  className="accent-blue-500"
+                />
+
+                <span className="text-sm text-gray-300">
+                  {status}
+                </span>
+              </label>
+            )
+          )}
+
+        </div>
       </div>
 
       {/* Company */}
       <div className="mb-4">
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Company
         </p>
@@ -137,7 +154,10 @@ export default function FilterPanel({
         <select
           value={local.company}
           onChange={(e) =>
-            update("company", e.target.value)
+            update(
+              "company",
+              e.target.value
+            )
           }
           className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
@@ -153,38 +173,49 @@ export default function FilterPanel({
               {company}
             </option>
           ))}
+
         </select>
       </div>
 
       {/* Date Range */}
       <div className="mb-4">
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Date Range
         </p>
 
-        <div className="flex gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+
           <input
             type="date"
             value={local.fromDate}
             onChange={(e) =>
-              update("fromDate", e.target.value)
+              update(
+                "fromDate",
+                e.target.value
+              )
             }
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full min-w-0 bg-gray-800 border border-gray-700 rounded-lg px-2 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
           <input
             type="date"
             value={local.toDate}
             onChange={(e) =>
-              update("toDate", e.target.value)
+              update(
+                "toDate",
+                e.target.value
+              )
             }
-            className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-2 py-1.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full min-w-0 bg-gray-800 border border-gray-700 rounded-lg px-2 py-2 text-xs text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+
         </div>
       </div>
 
       {/* Phone */}
       <div className="mb-4">
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Phone Number
         </p>
@@ -194,14 +225,19 @@ export default function FilterPanel({
           placeholder="(555) 123-4567"
           value={local.phone}
           onChange={(e) =>
-            update("phone", e.target.value)
+            update(
+              "phone",
+              e.target.value
+            )
           }
           className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
       </div>
 
       {/* Email */}
       <div className="mb-4">
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Email Contains
         </p>
@@ -211,18 +247,23 @@ export default function FilterPanel({
           placeholder="@gmail.com"
           value={local.email}
           onChange={(e) =>
-            update("email", e.target.value)
+            update(
+              "email",
+              e.target.value
+            )
           }
           className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-2 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+
         <button
           type="button"
           onClick={apply}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 rounded-lg transition"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm py-2 rounded-lg transition"
         >
           Apply Filters
         </button>
@@ -230,30 +271,37 @@ export default function FilterPanel({
         <button
           type="button"
           onClick={clear}
-          className="flex-1 bg-gray-800 hover:bg-gray-700 text-sm py-2 rounded-lg transition"
+          className="w-full bg-gray-800 hover:bg-gray-700 text-sm py-2 rounded-lg transition"
         >
           Clear All
         </button>
+
       </div>
 
       {/* Saved Filters */}
       <div>
+
         <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-2">
           Saved Filters
         </p>
 
-        {SAVED_FILTERS.map((savedFilter) => (
-          <button
-            key={savedFilter.name}
-            type="button"
-            onClick={() =>
-              applySavedFilter(savedFilter.filters)
-            }
-            className="w-full text-left text-sm text-gray-300 bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg mb-1 transition"
-          >
-            {savedFilter.name}
-          </button>
-        ))}
+        {SAVED_FILTERS.map(
+          (savedFilter) => (
+            <button
+              key={savedFilter.name}
+              type="button"
+              onClick={() =>
+                applySavedFilter(
+                  savedFilter.filters
+                )
+              }
+              className="w-full text-left text-sm text-gray-300 bg-gray-800 hover:bg-gray-700 px-3 py-2 rounded-lg mb-1 transition"
+            >
+              {savedFilter.name}
+            </button>
+          )
+        )}
+
       </div>
 
     </div>
