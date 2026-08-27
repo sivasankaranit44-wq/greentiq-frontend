@@ -39,47 +39,61 @@ export default function Dashboard() {
   const [editCustomer, setEditCustomer] = useState(null);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  // Fetch customers
-  const fetchCustomers = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+// Fetch customers
+const fetchCustomers = useCallback(async () => {
+  setLoading(true);
+  setError(null);
 
-    try {
-      const params = {
-        search,
-        ...filters,
-        sortBy,
-        sortOrder,
-        page,
-        limit,
-      };
+  try {
+    const params = {
+      search,
+      ...filters,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    };
 
-      const res = await axios.get(API, { params });
+    console.log("Fetching customers from:", API);
 
-      const responseData = res.data || {};
+    const res = await axios.get(API, { params });
 
-      setCustomers(
-        Array.isArray(responseData.data)
-          ? responseData.data
-          : []
-      );
+    console.log("API response:", res.data);
 
-      setTotal(responseData.total || 0);
-      setPages(responseData.pages || 1);
-    } catch (err) {
-  console.error("Failed to fetch customers:", err);
+    const responseData = res.data || {};
 
-  console.log("Status:", err.response?.status);
-  console.log("Response:", err.response?.data);
-  console.log("API URL:", API);
+    setCustomers(
+      Array.isArray(responseData.data)
+        ? responseData.data
+        : []
+    );
 
-  setError(
-    err.response?.data?.message ||
-    err.response?.data?.error ||
-    "Failed to fetch customers"
-  );
-    }
-  }, [search, filters, sortBy, sortOrder, page, limit]);
+    setTotal(responseData.total || 0);
+    setPages(responseData.pages || 1);
+
+  } catch (err) {
+    console.error("Failed to fetch customers:", err);
+
+    console.log("Status:", err.response?.status);
+    console.log("Response:", err.response?.data);
+    console.log("API URL:", API);
+
+    setError(
+      err.response?.data?.message ||
+      err.response?.data?.error ||
+      "Failed to fetch customers"
+    );
+
+    setCustomers([]);
+    setTotal(0);
+    setPages(1);
+
+  } finally {
+    setLoading(false);
+  }
+}, [search, filters, sortBy, sortOrder, page, limit]);
+
+
 
   // Fetch whenever search/filter/sort/page changes
   useEffect(() => {
